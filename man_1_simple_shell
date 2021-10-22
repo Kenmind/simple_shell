@@ -12,13 +12,22 @@ hsh - command-line interpreter (shell) for terminal imulators
 
 # DESCRIPTION
 
-The **hsh** shell is a command-line interpreter that provides a command line user interface for Unix-like Operating Systems. This man page is not intended to be a tutorial or a complete specification of the shell.
+The **hsh** shell is a command-line interpreter that provides a command line user
+ interface for Unix-like Operating Systems. This man page is not intended to be 
+a tutorial or a complete specification of the shell.
 
 ## Overview
 
 The shell is a command/programme that reads input from either a file or 
 the terminal, interprets them, and generally executes other commands.
-It is the program that is running when a user logs into the system. The shell implements a language that has flow control constructs, a macro facility that provides a variety of features in addition to data storage, along with line editing capabilities and built in history. It incorporates many features to aid interactive use and has the advantage that the interpretative language is common to both interactive and non-interactive use (shell scripts). That is, command can be typed directly to the running shell or can be put into a file and the file can be executed directly by the shell.
+It is the program that is running when a user logs into the system. 
+The shell implements a language that has flow control constructs, a macro
+ facility that provides a variety of features in addition to data storage, 
+along with line editing capabilities and built in history. It incorporates 
+many features to aid interactive use and has the advantage that the interpretative 
+language is common to both interactive and non-interactive use (shell scripts). 
+That is, command can be typed directly to the running shell or can be put into 
+a file and the file can be executed directly by the shell.
 
 ## Invocation
 
