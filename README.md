@@ -114,4 +114,4 @@ The Checker will be released at the end of the project (1-2 days before the dead
 
 ## Authors
 * **Lloyd Moyo** - [llwyd1](https://github.com/llwyd1)
-* **Kennedy Kalaluka ** - [kenmind](https://github.com/kenmind)
+* **Kennedy Kalaluka** - [kenmind](https://github.com/kenmind)
