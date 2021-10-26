@@ -19,7 +19,7 @@ int non_interactive(char **av);
 int interactive(char *av[], int count, char **env);
 int print_env(char **env);
 char *gets_env(char *name, char **env);
-int creat_proc(char *av, int count, char **env);
+int creat_proc(char *av[], int count, char **env);
 int _exit(char *line, int status, char *av, int count);
 int _atoi(char **array);
 void _signal(int sig);
