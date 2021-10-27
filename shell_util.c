@@ -1,4 +1,4 @@
-#include <shell.h>
+#include "shell.h"
 
 /**
  * _signal - checks the parameters/arguments
@@ -29,7 +29,7 @@ char *val_file(char *path_f, char *file)
 
 	while (tok != NULL)
 	{
-		path_name = malloc((_strlen(token) + _strlen(file) + 2) * sizeof(char));
+		path_name = malloc((_strlen(tok) + _strlen(file) + 2) * sizeof(char));
 		if (path_name == NULL)
 		{
 			free(path_name);
