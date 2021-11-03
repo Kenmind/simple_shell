@@ -31,32 +31,9 @@ a file and the file can be executed directly by the shell.
 
 ## Invocation
 
-## Argument List Processing
-
-## Lexical Operations
-
-## Quoting
-
-## Backslash
-
-## Single Quotes
-
-## Double Quotes
-
-## Reserved Words
-
-## Aliases
-
-## Commands
-
-
-# OPTIONS
-
-# EXAMPLES
-
-# ENVIRONMENT
-
-# EXIT VALUES
+**./hsh** invokes the shell in interactive mode while
+**./hsh** **[arguments]** invokes the shell in non-interactive mode
 
 # BUGS
 
+https://github.com/Kenmind/simple_shell/issues
