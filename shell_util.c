@@ -50,105 +50,108 @@ char *val_file(char *path_f, char *file)
 }
 
 /**
- * gets_env - gets the varriable environment
- * @name: names the varriable environment
- * @env: the global environment
- * Return: char env
+ * _which - fleshes out command by appending it to a matching PATH directory
+ * @str: first command user typed into shell (e.g. "ls" if user typed "ls -l")
+ * @env: environmental variable
+ * Return: a copy of fleshed out command (e.g. "/bin/ls" if originally "ls")
  */
-
-char *gets_env(char *name, char **env)
+char *_which(char *str, list_t *env)
 {
-	char *tok1 = NULL, *tok2 = NULL, *env_name = NULL, *cur_env = NULL;
+	int pth = 0;
+	char **toks, *cat = NULL, *pth2 = NULL;
 	int i = 0;
 
-	env_name = _strdup(name);
+	/* get and tokenize PATH directories, then free original string */
+	pth = get_env("PATH", env);
+	pth2 = _atoi2(pth);
+	toks = _strtok(pth2, ":");
+	free(pth2);
 
-	while (env[i] && env)
+	/* append "/cmd" to each token to see it's legit */
+	i = 0;
+	while (toks[i] != NULL)
 	{
-		cur_env = NULL;
-		tok2 = NULL;
-		cur_env = _strdup(env[i]);
-		tok1 = strtok(cur_env, "=");
-		tok2 = _strdup(strtok(NULL, "="));
-		if (_strcmp(env_name, tok1) == 0)
+		if (toks[i][0] == '\0')
+			cat = getcwd(cat, 0);
+		else
+			cat = _strdup(toks[i]);
+		cat = _strcat(cat, "/");
+		cat = _strcat(cat, str);
+		if (access(cat, F_OK) == 0)
 		{
-			break;
+			/* free tokens before returning legit fleshed path */
+			free_double_ptr(toks);
+			return (cat);
 		}
-		free(cur_env);
-		free(tok2);
+		free(cat); /* free concatenated string if cmd is never found */
 		i++;
 	}
-	free(cur_env);
-	cur_env = NULL;
-	free(env_name);
-	return (tok2);
+	free_double_ptr(toks);
+	return (str); /* return string if not found; won't pass execve */
 }
 
+
 /**
- * creat_proc - creates and executes a child process
- * @av: ptr to array of args from the input buffer
- * @count: counts all executions at each position
- * @env: varriable environment
- * Return: 0
+ * numlen - counts number of 0s in a tens power number
+ * @n: number
+ * Return: returns count of digits
  */
-
-int creat_proc(char *av[], int count, char **env)
+int numlen(int n)
 {
-	char *path = NULL, *file = NULL, error_msg[100];
-	int sta = 0, found = 0, alloc = 0, exit_status = 0;
-	pid_t child_pid;
-	struct stat st;
+	int count = 0;
+	int num = n;
 
-	if (stat(av[1], &st) == 0)
-		found = 1, file = av[1];
-	else
+	while (num > 9 || num < -9)
 	{
-		path = gets_env("PATH", env), file = val_file(path, av[1]);
-		if (file != NULL)
-			found = 1, alloc = 1;
-		free(path);
+		num /= 10;
+		count++;
 	}
-	if (found)
-	{
-		child_pid = fork();
-		if (child_pid == 0)
-		{
-			if ((execve(file, (av + 1), env)) == -1)
-			{
-				sprintf(error_msg, "%s: %d: %s: not found\n", av[0], count, av[1]);
-				write(2, error_msg, _strlen(error_msg));
-				(alloc == 1) ? free(file) : (void) alloc;
-			}
-		}
-		waitpid(child_pid, &sta, 0), (alloc == 1) ? free(file) : (void) alloc;
-		if (WIFEXITED(sta))
-		{
-			exit_status = WEXITSTATUS(sta);
-			return (exit_status);
-		}
-	} else
-	{
-		sprintf(error_msg, "%s: %d: %s: not found\n", av[0], count, av[1]);
-		write(2, error_msg, _strlen(error_msg));
-		return (127);
-	}
-	return (0);
+	return (count);
 }
-
 /**
- * print_env - prints environment global variable
- * @env: variable to print
- * Return: EXIT SUCCESS
+ * _atoi2 - turns an int into a string
+ * @number: int
+ * Return: returns the int as a string. returns NULL if failed
  */
 
-int print_env(char **env)
+char *_atoi2(int number)
 {
-	int i = 0;
+	int digits, tens, i = 0, t = 0, x;
+	char *res;
 
-	for (i = 0; env[i] != NULL; i++)
+	digits = number;
+	tens = 1;
+
+	if (number < 0)
+		t = 1;
+	res = malloc(sizeof(char) * (numlen(digits) + 2 + t));
+	if (res == NULL)
+		return (NULL);
+	if (number < 0)
 	{
-		write(STDOUT_FILENO, env[i], _strlen(env[i]));
-		write(STDOUT_FILENO, "\n", 1);
+		res[i] = '-';
+		i++;
 	}
-	return (EXIT_SUCCESS);
+	for (x = 0; digits > 9 || digits < -9; x++)
+	{
+		digits /= 10;
+		tens *= 10;
+	}
+	for (digits = number; x >= 0; x--)
+	{
+		if (digits < 0)
+		{
+			res[i] = (digits / tens) * -1 + '0';
+			i++;
+		}
+		else
+		{
+			res[i] = (digits / tens) + '0';
+			i++;
+		}
+		digits %= tens;
+		tens /= 10;
+	}
+	res[i] = '\0';
+	return (res);
 }

@@ -18,118 +18,117 @@ int _atoi(char *array)
 }
 
 /**
- * f_exit - returns an exit value
- * @line: buffer
- * @status: status process value
- * @count: counts arguments and executions
- * @av: programme name
- * Return: exit value
+ * c_ignore - custom ignores spaces and newlines
+ * (e.g. echo "ls\n ls" | ./a.out)
+ * @str: envrionmental variables
+ * Return: new string
  */
-
-int f_exit(char *line, int status, char *av, int count)
+char *c_ignore(char *str)
 {
-	char *arg[3], *tmp = NULL, *tok = NULL, msg[100];
-	char a = 'a', z = 'z', u_a = 'A', u_z = 'Z', chr = '\0', *args = NULL;
-	int ret = 0, i = 0;
-
-	tmp = _strdup(line);
-	free(line);
-	tok = strtok(tmp, " \t\n\r");
-
-	for (i = 0; tok != NULL; i++)
-	{
-		arg[i] = tok;
-		tok = strtok(NULL, " \t\n\r");
-	}
-	arg[i] = NULL;
-	if (arg[1] == NULL)
-	{
-		free(tmp);
-		return (status);
-	}
-	args = _strdup(arg[1]);
-	if (args)
-		chr = *arg[1];
-	if ((chr >= a && chr <= z) ||
-			(chr >= u_a && chr <= u_z) || (_atoi(args)) < 0)
-	{
-		sprintf(msg, "%s: %d: exit: Illegal number: %s\n", av, count, arg[1]);
-		write(2, msg, _strlen(msg));
-		free(tmp), free(args);
-		return (2);
-	}
-	if (args)
-	{
-		ret = _atoi(arg[1]);
-		free(tmp), free(args);
-		return (ret);
-	}
-	free(args);
-	free(tmp);
-	return (status);
+	while (*str == ' ' || *str == '\n')
+		str++;
+	return (str);
 }
 
 /**
- * interactive - gets command line by getline in interactive mode
- * @av: pointer to string with function to execute on the first position
- * @count: counts the number of times a command is executed
- * @env: environmenta variable environment
- * Return: status process value
+ * non_interactive - handles when user pipes commands into shell via pipeline
+ * (e.g. echo "ls/nls -al/n" | ./a.out)
+ * @env: envrionmental variables
  */
-
-int interactive(char *av[], int count, char **env)
+void non_interactive(list_t *env)
 {
-	int interact = 1, status_proc = 0, i = 0, read = 0, ext = 0;
-	size_t len = 0;
-	char *line = NULL, *arg[32], *tok = NULL;
+	size_t i = 0, n = 0;
+	int command_line_no = 0, exit_stat = 0;
+	char *command = NULL, *n_command = NULL, **n_line, **token;
 
-	isatty(STDIN_FILENO) == 0 ? interact = 0 : interact;
-	while (1)
+	i = get_line(&command);
+	if (i == 0)
 	{
-		interact == 1 ? write(STDIN_FILENO, "#shell$ ", 8) : interact;
-		read = getline(&line, &len, stdin);
-		if (read == EOF)
+		free(command);
+		exit(0);
+	}
+	n_command = command;
+	command = c_ignore(command);
+	n_line = _strtok(command, "\n"); /* tokenize each command string */
+	if (n_command != NULL)
+		free(n_command);
+	n = 0;
+	while (n_line[n] != NULL)
+	{
+		command_line_no++;
+		token = NULL; /* tokenize each command in array of commands */
+		token = _strtok(n_line[n], " ");
+		exit_stat = built_in(token, env, command_line_no, n_line);
+		if (exit_stat)
 		{
-			free(line), write(STDIN_FILENO, "\n", 1);
-			return (status_proc);
+			n++;
+			continue;
 		}
-		else if (_strncmp(line, "exit\n", 4) == 0)
+		exit_stat = __execv(token, env, command_line_no);
+		n++;
+	}
+	free_double_ptr(n_line);
+	free_linked_list(env);
+	exit(exit_stat);
+}
+
+
+/**
+ * get_line - stores into malloced buffer the user's command into shell
+ * @str: buffer
+ * Return: number of characters read
+ */
+size_t get_line(char **str)
+{
+	ssize_t i = 0, size = 0, t = 0, t2 = 0, n = 0;
+	char buff[1024];
+
+	/* read while there's stdin greater than buffsize; -1 to add a '\0' */
+	while (t2 == 0 && (i = read(STDIN_FILENO, buff, 1024 - 1)))
+	{
+		if (i == -1) /* check if read errored */
+			return (-1);
+
+		buff[i] = '\0'; /* terminate buff with \0 to use with _strcat */
+
+		n = 0; /* last loop if \n is found in the stdin read */
+		while (buff[n] != '\0')
 		{
-			ext = f_exit(line, status_proc, av[0], count);
-			return (ext);
+			if (buff[n] == '\n')
+				t2 = 1;
+			n++;
 		}
-		else
+
+		/* copy what's read to buff into get_line's buffer */
+		if (t == 0) /* malloc the first time */
 		{
-			if (_strncmp(line, "env\n", 3) == 0)
-				status_proc = print_env(env), count++;
-			else if (read > 1)
-			{
-				tok = strtok(line, " \t\n\r"), arg[0] = av[0];
-				for (i = 1; i < 32 && tok != NULL; i++)
-					arg[i] = tok, tok = strtok(NULL, " \t\n\r"),
-					arg[i] = NULL;
-				if (arg[i])
-					status_proc = creat_proc(arg, count, env);
-			}
-			count++;
+			i++;
+			*str = malloc(sizeof(char) * i);
+			*str = _strcpy(*str, buff);
+			size = i;
+			t = 1;
+		}
+		else /* _realloc via _strcat with each loop */
+		{
+			size += i;
+			*str = _strcat(*str, buff);
 		}
 	}
-	return (status_proc);
+	return (size);
 }
 
 /**
- * non_interactive - checks if there is input from the keyboard
- * @av: pointer to string of all arguments from each position of input
- * Return: void
+ * free_double_ptr - free malloced arrays
+ * @str: array of strings
  */
-
-int non_interactive(char **av)
+void free_double_ptr(char **str)
 {
-	char error_msg[120];
+	int i = 0;
 
-	sprintf(error_msg, "%s: 0: Can't open %s\n", av[0], av[1]);
-	write(2, error_msg, _strlen(error_msg));
-	return (127);
+	while (str[i] != NULL)
+	{
+		free(str[i]);
+		i++;
+	}
+	free(str);
 }
-
-

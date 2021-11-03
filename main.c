@@ -1,24 +1,19 @@
 #include "shell.h"
 
 /**
- * main - main function
+ * main - main function for creating a shell
  * @ac: records the number of arguments
  * @av: array of arguments
  * @env: environment variable system
- * Return: status exit value
+ * Return: 0
  */
 
-int main(int ac, char *av[], char **env)
+int main(int ac, char **av, char **env)
 {
-	int count = 1, status_exit = 0;
+	(void)ac;
+	(void)av;
 
-	_signal(SIGINT);
+	prompt(env);
 
-	if (ac > 1)
-	{
-		status_exit = non_interactive(av);
-		return (status_exit);
-	}
-	status_exit = interactive(av, count, env);
-	return (status_exit);
+	return (0);
 }
