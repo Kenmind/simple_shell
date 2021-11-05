@@ -1,43 +1,6 @@
 #include "shell.h"
 
 /**
- * val_file - checks if the file exists int a directory
- * @path_f: environment variable path
- * @file: command name
- * Return: the path to the file
- */
-
-char *val_file(char *path_f, char *file)
-{
-	struct stat st;
-	char *path_name, *tok = NULL;
-	int i = 0;
-
-	tok = strtok(path_f, ":");
-
-	while (tok != NULL)
-	{
-		path_name = malloc((_strlen(tok) + _strlen(file) + 2) * sizeof(char));
-		if (path_name == NULL)
-		{
-			free(path_name);
-			return (file);
-		}
-		_strcpy(path_name, tok);
-		_strcat(path_name, "/");
-		_strcat(path_name, file);
-		if (stat(path_name, &st) == 0)
-		{
-			return (path_name);
-		}
-		free(path_name);
-		tok = strtok(NULL, ":");
-		i++;
-	}
-	return (NULL);
-}
-
-/**
  * _which - fleshes out command by appending it to a matching PATH directory
  * @str: first command user typed into shell (e.g. "ls" if user typed "ls -l")
  * @env: environmental variable

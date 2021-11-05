@@ -31,18 +31,16 @@ typedef struct list
 
 /* shell utils */
 void non_interactive(list_t *env);
-int interactive(char *av[], int count, char **env);
 int print_env(char **str, list_t *env);
 char *get_env(char *str, list_t *env);
-int creat_proc(char *av[], int count, char **env);
 int _atoi(char *array);
 char *_atoi2(int number);
-char *val_file(char *path_f, char *file);
-int manageEnviron(char *args[], int option);
 int __execv(char **s, list_t *env, int num);
 int __exit(char **str, list_t *env, int num, char **command);
 int _cd(char **str, list_t *env, int num);
 void failed_cd(char *str, int c_n, list_t *env);
+void _unavailable(char *str, int c_n, list_t *env);
+void i_number(char *str, int c_n, list_t *env);
 int prompt(char **en);
 char *_which(char *str, list_t *env);
 void free_linked_list(list_t *list);

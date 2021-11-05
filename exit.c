@@ -37,7 +37,7 @@ int __execv(char **s, list_t *env, int num)
 	/* if not an executable, free */
 	if (access(holder, X_OK) != 0)
 	{
-		printf("%s, %d\n", s[0], num);
+		_unavailable(s[0], num, env);
 		free_double_ptr(s);
 		return (127);
 	}
@@ -48,7 +48,7 @@ int __execv(char **s, list_t *env, int num)
 		{
 			if (execve(holder, s, NULL) == -1)
 			{
-				printf("%s, %d\n", s[0], num); /* special err msg */
+				_unavailable(s[0], num, env); /* special err msg */
 				c_exit(s, env);
 			}
 		}
@@ -101,7 +101,7 @@ int __exit(char **str, list_t *env, int num, char **command)
 
 	if (e_value == -1) /* if value given after exit is invalid, perror */
 	{
-		printf("%s, %d, env\n", str[1], num); /* print error msg */
+		i_number(str[1], num, env); /* print error msg */
 		free_double_ptr(str);
 		return (2);
 	}

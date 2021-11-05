@@ -19,7 +19,7 @@ int _atoi(char *array)
 
 /**
  * c_ignore - custom ignores spaces and newlines
- * (e.g. echo "ls\n ls" | ./a.out)
+ * (e.g. echo "ls\n ls" | ./hsh)
  * @str: envrionmental variables
  * Return: new string
  */
@@ -32,7 +32,7 @@ char *c_ignore(char *str)
 
 /**
  * non_interactive - handles when user pipes commands into shell via pipeline
- * (e.g. echo "ls/nls -al/n" | ./a.out)
+ * (e.g. echo "ls\nls -al\n" | ./hsh)
  * @env: envrionmental variables
  */
 void non_interactive(list_t *env)
