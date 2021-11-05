@@ -33,20 +33,21 @@ typedef struct list
 void non_interactive(list_t *env);
 int interactive(char *av[], int count, char **env);
 int print_env(char **str, list_t *env);
-int get_env(char *str, list_t *env);
+char *get_env(char *str, list_t *env);
 int creat_proc(char *av[], int count, char **env);
 int _atoi(char *array);
 char *_atoi2(int number);
-void _signal(int sig);
 char *val_file(char *path_f, char *file);
 int manageEnviron(char *args[], int option);
 int __execv(char **s, list_t *env, int num);
 int __exit(char **str, list_t *env, int num, char **command);
 int _cd(char **str, list_t *env, int num);
+void failed_cd(char *str, int c_n, list_t *env);
 int prompt(char **en);
 char *_which(char *str, list_t *env);
 void free_linked_list(list_t *list);
 void free_double_ptr(char **str);
+int search_env(char *str, list_t *env);
 int _setenv(list_t **env, char **str);
 int _unsetenv(list_t **env, char **str);
 size_t print_list(list_t *h);
@@ -67,6 +68,7 @@ char *_strdup(char *str);
 char *_strcpy(char *dest, char *src);
 char *ignore_delm(char *str, char delm);
 char **c_str_tok(char *str, char *delm);
+char *c_strdup(char *str, int cs);
 int t_strlen(char *str, int pos, char delm);
 
 

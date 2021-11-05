@@ -39,7 +39,7 @@ int print_env(char **str, list_t *env)
  * @str: variable name
  * Return: idx of node in linked list
  */
-int get_env(char *str, list_t *env)
+char *get_env(char *str, list_t *env)
 {
 	int j = 0, index = 0;
 
@@ -48,14 +48,15 @@ int get_env(char *str, list_t *env)
 		j = 0;
 		while ((env->var)[j] == str[j]) /* find desired env variable */
 			j++;
-		if (str[j] == '\0') /* if matches entirely, break, return idx */
+		if (str[j] == '\0' && (env->var)[j] == '=')
+			/* if matches entirely, break, return idx */
 			break;
 		env = env->next;
-		index++;
 	}
-	if (env == NULL)
-		return (-1);
-	return (index);
+	while (str[index] != '\0')
+		index++;
+	index++;
+	return (c_strdup(env->var, index));
 }
 
 /**
@@ -74,7 +75,7 @@ int _unsetenv(list_t **env, char **str)
 		free_double_ptr(str);
 		return (-1);
 	}
-	index = get_env(str[1], *env); /* get idx of node to delete */
+	index = search_env(str[1], *env); /* get idx of node to delete */
 	free_double_ptr(str);
 	if (index == -1) /* check if index errored */
 	{
@@ -111,7 +112,7 @@ int _setenv(list_t **env, char **str)
 	cat = _strdup(str[1]); /* concatenate strings to be new node data */
 	cat = _strcat(cat, "=");
 	cat = _strcat(cat, str[2]);
-	index = get_env(str[1], *env); /* find idx to traverse to node */
+	index = search_env(str[1], *env); /* find idx to traverse to node */
 	if (index == -1)
 	{
 		add_enode(env, cat); /* doesn't exist? create env var */

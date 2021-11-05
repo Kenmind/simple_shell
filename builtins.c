@@ -44,7 +44,7 @@ int built_in(char **token, list_t *env, int num, char **command)
 		_setenv(&env, token);
 		i = 1;
 	}
-	/* if user types "setenv", remove linked list node */
+	/* if user types "unsetenv", remove linked list node */
 	else if (_strcmp(token[0], "unsetenv") == 0)
 	{
 		_unsetenv(&env, token);

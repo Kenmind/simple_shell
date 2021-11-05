@@ -1,18 +1,6 @@
 #include "shell.h"
 
 /**
- * _signal - checks the parameters/arguments
- * @sig: signal index
- * Return: void
- */
-
-void _signal(int sig)
-{
-	if (sig)
-		write(STDIN_FILENO, "\n#shell$ ", 9);
-}
-
-/**
  * val_file - checks if the file exists int a directory
  * @path_f: environment variable path
  * @file: command name
@@ -57,15 +45,13 @@ char *val_file(char *path_f, char *file)
  */
 char *_which(char *str, list_t *env)
 {
-	int pth = 0;
-	char **toks, *cat = NULL, *pth2 = NULL;
+	char *pth, **toks, *cat = NULL;
 	int i = 0;
 
 	/* get and tokenize PATH directories, then free original string */
 	pth = get_env("PATH", env);
-	pth2 = _atoi2(pth);
-	toks = _strtok(pth2, ":");
-	free(pth2);
+	toks = _strtok(pth, ":");
+	free(pth);
 
 	/* append "/cmd" to each token to see it's legit */
 	i = 0;
@@ -154,4 +140,37 @@ char *_atoi2(int number)
 	}
 	res[i] = '\0';
 	return (res);
+}
+
+/**
+ * c_strdup - custom string duplication; excludes beginning bytes
+ * @str: string to duplicate (e.g. environmental variable PATH=/bin:/bin/ls)
+ * @cs: number of bytes to exclude (e.g. excludes "PATH=")
+ * Return: string (e.g. /bin:/bin/ls)
+ */
+char *c_strdup(char *str, int cs)
+{
+	char *duplicate_str;
+	int i, len = 0;
+
+	if (str == NULL) /* validate str input */
+		return (NULL);
+
+	/* calculate len + null terminator to malloc */
+	while (*(str + len))
+		len++;
+	len++;
+
+	/* allocate memory but exclude environmental variable title (PATH) */
+	duplicate_str = malloc(sizeof(char) * (len - cs));
+	if (duplicate_str == NULL)
+		return (NULL);
+
+	i = 0;
+	while (i < (len - cs))
+	{
+		*(duplicate_str + i) = *(str + cs + i);
+		i++;
+	}
+	return (duplicate_str);
 }

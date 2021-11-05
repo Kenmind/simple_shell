@@ -56,7 +56,7 @@ int c_setenv(list_t **env, char *name, char *dir)
 	cat = _strdup(name); /* create new concatenated string */
 	cat = _strcat(cat, "=");
 	cat = _strcat(cat, dir);
-	index = get_env(name, *env); /* get idx to env var in linked list */
+	index = search_env(name, *env); /* get idx to env var in linked list */
 
 	/* traverse to idx, free node data, reassign data */
 	holder = *env;
@@ -80,7 +80,7 @@ void cd_only(list_t *env, char *current)
 {
 	char *home = NULL;
 
-	home = _atoi2(get_env("HOME", env));
+	home = get_env("HOME", env);
 	c_setenv(&env, "OLDPWD", current); /* update env OLDPWD */
 	free(current);
 	if (access(home, F_OK) == 0) /* if exist, go to home dir */
@@ -116,7 +116,7 @@ int cd_execute(list_t *env, char *current, char *dir, char *str, int num)
 	}
 	else
 	{
-		printf("%s, %d\n", str, num);
+		failed_cd(str, num, env);
 		free(current);
 		i = 2;
 	}
@@ -132,17 +132,16 @@ int cd_execute(list_t *env, char *current, char *dir, char *str, int num)
  */
 int _cd(char **str, list_t *env, int num)
 {
-	char *current = NULL, *dir2 = NULL;
-	int exit_stat = 0, dir = 0;
+	char *current = NULL, *dir = NULL;
+	int exit_stat = 0;
 
 	current = getcwd(current, 0); /* store current working directory */
-	dir2 = _atoi2(dir);
 	if (str[1] != NULL)
 	{
 		if (str[1][0] == '~') /* Usage: cd ~ */
 		{
 			dir = get_env("HOME", env);
-			dir2 = c_strcat(dir2, str[1]);
+			dir = c_strcat(dir, str[1]);
 		}
 		else if (str[1][0] == '-') /* Usage: cd - */
 		{
@@ -153,15 +152,15 @@ int _cd(char **str, list_t *env, int num)
 		{
 			if (str[1][0] != '/')
 			{
-				dir2 = getcwd(dir2, 0);
-				dir2 = _strcat(dir2, "/");
-				dir2 = _strcat(dir2, str[1]);
+				dir = getcwd(dir, 0);
+				dir = _strcat(dir, "/");
+				dir = _strcat(dir, str[1]);
 			}
 			else
-				dir2 = _strdup(str[1]);
+				dir = _strdup(str[1]);
 		}
-		exit_stat = cd_execute(env, current, dir2, str[1], num);
-		free(dir2);
+		exit_stat = cd_execute(env, current, dir, str[1], num);
+		free(dir);
 	}
 	else /* Usage: cd */
 		cd_only(env, current);
