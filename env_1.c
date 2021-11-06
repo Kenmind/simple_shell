@@ -84,6 +84,7 @@ void _unavailable(char *str, int c_n, list_t *env)
 	free(num);
 	write(STDOUT_FILENO, ": ", 2);
 	count = 0;
+	str = malloc(sizeof(char) + 1);
 	while (str[count] != '\0')
 		count++;
 	write(STDOUT_FILENO, str, count);
