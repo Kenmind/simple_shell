@@ -11,7 +11,7 @@ void ctrl_c(int n)
 }
 
 /**
- * built_in - handles builtins (exit, env, cd)
+ * built_in - handles builtins (exit, env, cd, esetenv, unsetenv and clear)
  * @token: user's typed command
  * @env: environmental variable
  * @num: take in nth user command typed to write error message
@@ -48,6 +48,12 @@ int built_in(char **token, list_t *env, int num, char **command)
 	else if (_strcmp(token[0], "unsetenv") == 0)
 	{
 		_unsetenv(&env, token);
+		i = 1;
+	}
+	/* if user types "clear", we clear the terminal */
+	else if (_strcmp(token[0], "clear") == 0)
+	{
+		system("clear");
 		i = 1;
 	}
 	return (i);

@@ -114,7 +114,7 @@ int cd_execute(list_t *env, char *current, char *dir, char *str, int num)
 		c_setenv(&env, "PWD", current); /* update env PWD */
 		free(current);
 	}
-	else
+	else if (access(dir, F_OK) != 0)
 	{
 		failed_cd(str, num, env);
 		free(current);

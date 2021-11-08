@@ -31,8 +31,54 @@ a file and the file can be executed directly by the shell.
 
 ## Invocation
 
-**./hsh** invokes the shell in interactive mode while
-**./hsh** **[arguments]** invokes the shell in non-interactive mode
+**./hsh** invokes the shell in interactive mode as shown below;
+```''''
+──(root💀kali)-[/home/simple_shell]
+└─# ./hsh
+$ ls
+AUTHORS    builtins.c  env_1.c  lists.c             shell.h         string_util.c
+README.md  ch_dir.c    exit.c   main.c              shell_util.c    string_util_1.c
+auth-gen   env.c       hsh      man_1_simple_shell  shell_util_1.c
+$ cd /home
+/home/simple_shell/./hsh: 2: : not found
+$ ls
+0x00-Projects    Betty.wiki                 devops                                    printf
+0x01-Practicing  _funcs0.c                  holbertonschool-higher_level_programming  simple_shell
+AUTHORS          _preswidlen.c              holbertonschool-low_level_programming     zero_day
+Betty            alx-low_level_programming  kennedy
+$ 
+```''''
+
+**echo** \"**arguments**\" | **./hsh** invokes the shell in non-interactive mode as shown below;
+```''''
+┌──(root💀kali)-[/home/simple_shell]
+└─# echo "ls\n ls -al\n" | ./hsh
+AUTHORS    builtins.c  env_1.c  lists.c             shell.h         string_util.c
+README.md  ch_dir.c    exit.c   main.c              shell_util.c    string_util_1.c
+auth-gen   env.c       hsh      man_1_simple_shell  shell_util_1.c
+total 132
+drwxr-xr-x  4 root root  4096 Nov  8 16:31 .
+drwxr-xr-x 14 root root  4096 Oct 21 10:19 ..
+drwxr-xr-x  8 root root  4096 Nov  8 16:15 .git
+-rw-r--r--  1 root root 12288 Nov  8 16:42 .man_1_simple_shell.swp
+-rw-r--r--  1 root root   307 Nov  6 05:38 AUTHORS
+-rw-r--r--  1 root root  3166 Oct 26 10:11 README.md
+drwxr-xr-x  2 root root  4096 Oct 22 08:36 auth-gen
+-rw-r--r--  1 root root  3325 Nov  8 16:16 builtins.c
+-rw-r--r--  1 root root  3942 Nov  8 04:30 ch_dir.c
+-rw-r--r--  1 root root  2796 Nov  5 05:33 env.c
+-rw-r--r--  1 root root  2991 Nov  8 04:36 env_1.c
+-rw-r--r--  1 root root  3517 Nov  8 04:33 exit.c
+-rwxr-xr-x  1 root root 42608 Nov  8 16:16 hsh
+-rw-r--r--  1 root root  2345 Nov  5 09:18 lists.c
+-rw-r--r--  1 root root   286 Nov  8 16:15 main.c
+-rw-r--r--  1 root root  1366 Nov  3 16:25 man_1_simple_shell
+-rw-r--r--  1 root root  2052 Nov  8 16:15 shell.h
+-rw-r--r--  1 root root  2767 Nov  5 06:39 shell_util.c
+-rw-r--r--  1 root root  2627 Nov  6 04:31 shell_util_1.c
+-rw-r--r--  1 root root  1846 Nov  6 06:25 string_util.c
+-rw-r--r--  1 root root  2843 Nov  6 06:22 string_util_1.c
+```''''
 
 # BUGS
 

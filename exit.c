@@ -34,7 +34,7 @@ int __execv(char **s, list_t *env, int num)
 	/* else flesh out full path */
 	else
 		holder = _which(s[0], env);
-	/* if not an executable, free */
+	/* if not an executable, free s */
 	if (access(holder, X_OK) != 0)
 	{
 		_unavailable(s[0], num, env);
@@ -99,7 +99,7 @@ int __exit(char **str, list_t *env, int num, char **command)
 	if (str[1] != NULL) /* if no value given after exit, return 0 */
 		e_value = c_atoi(str[1]);
 
-	if (e_value == -1) /* if value given after exit is invalid, perror */
+	if (e_value < 0) /* if value given after exit is invalid, perror */
 	{
 		i_number(str[1], num, env); /* print error msg */
 		free_double_ptr(str);
