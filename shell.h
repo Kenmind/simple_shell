@@ -1,8 +1,19 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-#define TRUE 1
-#define FALSE !TRUE
+#define TRUE 0
+#define FALSE 1
+
+typedef int bool;
+
+#define MAX_HIS 4026
+#define MAX_ARGS 50
+#define INPUTVAL 512
+
+void history(char *tokens[], char *history[], int count);
+int hischeck(char *input, int count, char *history);
+void hiswrite(char *filename, char *history[MAX_HIS]);
+
 
 /**
  * struct list - linked list for environmental variables
